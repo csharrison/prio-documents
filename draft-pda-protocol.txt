@@ -691,6 +691,11 @@ Table of Contents
    "[leader]/upload_finish" with status 200 and an empty body.
    Malformed requests are handled as described in Section 3.7.
 
+   [TODO: Since we're running the protocol with multiple cohorts of
+   aggregators, the collector needs to decide how to pick which cohort
+   has the "correct" output.  This might be the cohort with the largest
+   batch of inputs.  Figure this out once the collection is specified.]
+
 3.4.  Verify
 
    [TODO: Add an illustration of this sub-protocol.]
