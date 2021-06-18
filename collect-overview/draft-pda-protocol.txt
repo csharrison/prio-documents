@@ -773,7 +773,7 @@ Table of Contents
    } PAVerifyRespSeq;
 
    struct {
-     PAProto;
+     PAProto proto;
      select (PAVerifyResp.proto) {
        case prio: PrioVerifyResp;
        case hits: HitsVerifyResp;
@@ -801,33 +801,36 @@ Table of Contents
    Once verification is complete, the collector interacts with the
    leader to produce the final aggregate output.  The collect protocol
    is an iterative procedure driven by the collector and parameterized
-   by PAParams.  At a high level, it proceeds as follows.  First, the
+   by PAParam.  At a high level, it proceeds as follows.  First, the
    collector initializes local per-protocol state using the
-   corresponding collection PAParams.  This state object has the
+   corresponding collection PAParam.  This state object has the
    following member functions:
 
-   *  CreateRequest(): Creates an opaque PACollectReq object, defined
-      below, that is sent to the leader to complete one iteration of the
-      protocol.
+   *  CreateRequest() -> PACollectReq: Creates a PACollectReq object,
+      defined below, that is sent to the leader to complete one
+      iteration of the protocol.
 
    struct {
-     PAProto;
+     PATask task;
+     PAProto proto;
      select (PACollectReq.proto) {
        case prio: PrioCollectReq;
        case hits: HitsCollectReq;
      }
-   } PACollectReq
+   } PACollectReq;
 
-   *  Update(): Consumes an opaque PACollectResp object, defined below,
-      that is received from the leader in response to a PACollectReq.
+   *  Update(resp: PACollectResp): Consumes an opaque PACollectResp
+      object, defined below, that is received from the leader in
+      response to a PACollectReq.
 
    struct {
-     PAProto;
+     PATask task;
+     PAProto proto;
      select (PACollectResp.proto) {
        case prio: PrioCollectResp;
        case hits: HitsCollectResp;
      }
-   } PACollectResp
+   } PACollectResp;
 
    *  Finished(): Returns a boolean indicating indicating whether or not
       the collection procedure is complete.  This function returns true
@@ -836,10 +839,10 @@ Table of Contents
    *  Output(): Returns the aggregate output corresponding to the
       protocol.
 
-   The collect procedure for a given PAParams structure "params" is then
+   The collect procedure for a given PAParam structure "param" is then
    driven with the following algorithm:
 
-   state = CreateState(params)
+   state = CreateState(param)
    while not state.Finished():
       req = state.CreateRequest()
       resp = fetch([leader]/collect, req)
@@ -850,16 +853,18 @@ Table of Contents
    from the leader, the collector aborts and returns a corresponding
    error.
 
-   [[OPEN ISSUE: describe how intra-protocol errors yield collect
-   errors]]
+   [OPEN ISSUE: describe how intra-protocol errors yield collect errors]
 
-   When the client sends a PACollectReq to the leader, the leader and
+   [NOTE(cjpatton): I don't think the protocol below is quite right.
+   The PACollectReq would kick off a round of verify-then-aggregate.]
+
+   When the collector sends a PACollectReq to the leader, the leader and
    helper engage in one round of collection in response to the
    collector.  To do so, the leader creates and sends a PAAggregateReq
    to the helper, constructed as follows:
 
    struct {
-     PAParams params;
+     PATask task;
      PAProto proto;
      select (PAAggregateReq.proto) {
        case prio: PrioAggregateReq;
@@ -870,7 +875,7 @@ Table of Contents
    The helper responds to the leader with a PAAggregateResp message,
    constructed as follows:
 
-   struct { PAProto; select (PAAggregateResp.proto) { case prio:
+   struct { PAProto proto; select (PAAggregateResp.proto) { case prio:
    PrioAggregateResp; case hits: HitsAggregateResp; } } PAAggregateResp;
    ~~~
 
