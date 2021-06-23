@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                            21 June 2021
-Expires: 23 December 2021
+Intended status: Standards Track                            23 June 2021
+Expires: 25 December 2021
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 December 2021.
+   This Internet-Draft will expire on 25 December 2021.
 
 Copyright Notice
 
@@ -196,6 +196,8 @@ Table of Contents
 
    19.  Report: Uploaded to the leader from the client.  A report
         contains the secret-shared and encrypted input and proof.
+
+   20.  Server: An aggregator or collector.
 
 2.  Overview
 
@@ -486,8 +488,8 @@ Table of Contents
    [OPEN ISSUE: Is there just one PAParam for each PATask, or do we want
    to allow PAParam to change overtime?]
 
-   [OPEN ISSUE: Maybe the collector config should be carried by the
-   collect request?]
+   [OPEN ISSUE: Maybe the collector's HPKE config should be carried by
+   the collect request?]
 
 3.1.3.  HPKE key configuration
 
@@ -529,7 +531,8 @@ Table of Contents
    1.  The aggregators agree on a set of PA tasks, as well as the PA
        parameters associated to each task.
 
-   2.  Each client is configured with a specific PA task.
+   2.  Each client has selected a PA task for which it will upload a
+       report.
 
    3.  Each client knows the URL of the leader endpoint, e.g.,
        "example.com/metrics".  We write this URL as "[leader]" below.
@@ -555,12 +558,14 @@ Table of Contents
 
 3.3.  Upload
 
-   Client            Leader
-     |  upload start   |
-     <----------------->
-     |  upload finish  |
-     <----------------->
-     v                 v
+   Client            Leader         Helper
+     |  upload start   |              |
+     <----------------->              |
+     |                 |  key config  |
+     <-------------------------------->
+     |  upload finish  |              |
+     <----------------->              |
+     v                 v              v
 
                     Figure 2: Flow of the upload process
 
@@ -720,7 +725,9 @@ Table of Contents
    } PALeaderInputShare;
 
    Note that only the helper's share is encrypted, and that the leader
-   share is sent in plaintext.
+   share is sent in plaintext.  (Confidentiality of the leader's share
+   is provided by the server-authenticated secure channel over which the
+   request is made.)
 
    The leader responds to well-formed requests to
    "[leader]/upload_finish" with status 200 and an empty body.
@@ -817,7 +824,8 @@ Table of Contents
    return state.Output()
 
    [OPEN ISSUE: Describe how intra-protocol errors yield collect errors
-   (see issue#57).]
+   (see issue#57).  For example, how does a leader respond to a collect
+   request if the helper drops out?]
 
    Each collect request involves one of the helpers specified by the PA
    parameters.  If more than one helper is specified, the collector may
