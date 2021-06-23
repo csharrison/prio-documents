@@ -555,8 +555,11 @@ Table of Contents
 
    The client sends a GET request to
    "[leader]/[version]/[task_id]/upload_start", where "[version] ==
-   PATask.version" and "[task_id] == PATask.id".  The leader respond
-   with status 200 and the following message:
+   PATask.version" and "[task_id] == PATask.id".  [TODO: Decide if
+   adding the protocol version and task id to the URL is the right way
+   to go.  Instead, we may want to make this a POST with a body that
+   specifies the PATask.  (See issue#61.)] The leader respond with
+   status 200 and the following message:
 
    struct {
      PAParam param;
