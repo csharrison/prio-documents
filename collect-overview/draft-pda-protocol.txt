@@ -357,19 +357,19 @@ Table of Contents
    which are executed concurrently.  Each sub-protocol consists of a
    sequence of HTTP requests made from one entity to another.
 
-                      +------------+
-                      |            |
-       +-------------->   Helper   |
-       |              |            |
-       |              +-----^------+
-       |                    |
-       |                    |
-       | 1.                 |
-   +--------+         +------------+         +-----------+
-   |        | 1.      |            |      2. |           |
-   | Client +--------->   Leader   <---------+ Collector |
-   |        |         |            |         |           |
-   +--------+         +------------+         +-----------+
+   +-------------+ 1.      +-------------+
+   |             +--------->             |
+   |   Client    |         |   Leader    |
+   |             |    +----+             |
+   +------+------+    | 2. +------^------+
+          | 1.        |           |
+          |           |           |
+          |           |           | 2.
+   +------v------+    |    +------+------+
+   |             <----+    |             |
+   |   Helper    |         |  Collector  |
+   |             |         |             |
+   +-------------+         +-------------+
 
       Figure 1: Who makes requests to whom while executing a PA task.
 
