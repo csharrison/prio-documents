@@ -394,8 +394,8 @@ Table of Contents
        has made a request.  (See Section 5.)
 
    [TODO: Say that the helper is stateless.  To make this possible, it
-   encrypts its any state it needs for verification and aggregation
-   under a symmetric key only it knows.  The leader keeps around the
+   encrypts any state it needs for verification and aggregation under a
+   symmetric key only it knows.  The leader keeps around the
    ciphertext.]
 
    [TODO: Say that the protocol involves multiple helpers.  The downside
@@ -474,7 +474,7 @@ Table of Contents
    opaque Url<1..2^16-1>;
 
    The first field is the PA task.  The "helper_urls" defines the
-   helpers' endpoint URLs.The "collector_config", is the HPKE
+   helpers' endpoint URLs.  The "collector_config" is the HPKE
    configuration of the collector (described in Section 3.1.3).  The
    "batch_size" field encodes the _batch size_, the number of input
    shares accumulated by each aggregator before emitting its output
@@ -644,7 +644,9 @@ Table of Contents
    "[leader]/upload_finish" with a payload constructed as described
    below.
 
-   [OPEN ISSUE: Should the request URL encode the PA task?]
+   [OPEN ISSUE: Should the request URL encode the PA task?  This would
+   be necessary if we make "upload_start" an idempotent GET per
+   issue#48.]
 
    [OPEN ISSUE: @chris-wood: Can't the leader determine if helpers are
    "online"?  This seems to reveal information that's specific to
@@ -836,12 +838,12 @@ Table of Contents
    [TODO: Specify how the helper encrypts its state.]
 
    After the client uploads a report to the leader, the leader and
-   helper verify in zero knowledge that the proof is well-formed.  The
-   exact procedure for doing so is protocol specific, but all protocols
-   have the same basic structure.  In particular, the protocol is
-   comprised of a sequence of _aggregate requests_ from the leader to
-   the helper.  At the end of this procedure, the leader and helper will
-   have have aggregated a set of valid client inputs.
+   helper verify in zero knowledge that the proof is valid.  The exact
+   procedure for doing so is protocol specific, but all protocols have
+   the same basic structure.  In particular, the protocol is comprised
+   of a sequence of _aggregate requests_ from the leader to the helper.
+   At the end of this procedure, the leader and helper will have have
+   aggregated a set of valid client inputs.
 
 3.4.2.1.  Aggregate Request
 
@@ -886,8 +888,8 @@ Table of Contents
    first looks for the PA parameters "PAParam" for which
    "PAAggregateReq.task.id == PAParam.task.id".  Next, it looks up the
    HPKE config and corresponding secret key associated with
-   "PAAggregateReq.key_config_id".  If not found, then it aborts and
-   alerts the leader with "unrecognized key config".  [NOTE: In this
+   "PAAggregateReq.helper_hpke_config_id".  If not found, then it aborts
+   and alerts the leader with "unrecognized key config".  [NOTE: In this
    situation, the leader has no choice but to abort.  This falls into
    the class of error scenarios that are addressable by running with
    multiple helpers.]
@@ -927,11 +929,11 @@ Table of Contents
 
 3.4.2.2.  Output Share Request
 
-   Once the aggregators have verified and aggregators at least as many
-   reports as required for the PA task, the leader issues an _output
-   share request_ to the helper.  The helper responds to this request by
-   decrypting its state, extracting its output share, and re-encrypting
-   the output share under the collector's HPKE public key.
+   Once the aggregators have verified at least as many reports as
+   required for the PA task, the leader issues an _output share request_
+   to the helper.  The helper responds to this request by decrypting its
+   state, extracting its output share, and re-encrypting the output
+   share under the collector's HPKE public key.
 
    The leader sends a POST request to "[helper]/output_share" with the
    following message:
@@ -948,7 +950,7 @@ Table of Contents
    struct {
      PAProto proto;
      select (PAOutputShare.proto) {
-       case hits: HitsOutputShare;
+       case prio: PrioOutputShare;
        case hits: HitsOutputShare;
      }
    } PAOutputShare;
@@ -960,7 +962,7 @@ Table of Contents
    encrypted_output_share = context.Seal(output_share, [TODO])
 
    where "pk" is the HPKE public key encoded by the collector's HPKE key
-   configuration and "ouptut_share" is its serialized output share.
+   configuration and "output_share" is its serialized output share.
 
    It responds with the following message:
 
