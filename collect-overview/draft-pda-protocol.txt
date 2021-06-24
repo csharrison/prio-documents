@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                            23 June 2021
-Expires: 25 December 2021
+Intended status: Standards Track                            24 June 2021
+Expires: 26 December 2021
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 December 2021.
+   This Internet-Draft will expire on 26 December 2021.
 
 Copyright Notice
 
@@ -880,7 +880,7 @@ Table of Contents
    as follows:
 
    struct {
-     opaque enc<1..2^16-1>;
+     opaque enc<0..2^16-1>;
      uint64 time; // UNIX timestamp (seconds) of the report.
      PAProto proto;
      select (PAAggregateSubReq.proto) {
@@ -894,10 +894,13 @@ Table of Contents
    } PAAggregateSubReq;
 
    The "enc" field is the helper's encapsulated HPKE context sent in the
-   report.  The "time" field should match the timestamp of the
-   corresponding report.  The remainder of the structure is dedicated to
-   the protocol-specific helper share and request parameters used for
-   the current round.
+   report.  (This field is marked optional because it is usually only
+   needed for the first aggregate request.  [TODO: Decide how to mark
+   the helper input share as optional as well.  This too is usually only
+   needed for the first request.]) The "time" field should match the
+   timestamp of the corresponding report.  The remainder of the
+   structure is dedicated to the protocol-specific helper share and
+   request parameters used for the current round.
 
    The helper handles well-formed requests as follows.  (As usual,
    malformed requests are handled as described in Section 3.6.)  It
