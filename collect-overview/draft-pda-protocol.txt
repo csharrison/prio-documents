@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                            24 June 2021
-Expires: 26 December 2021
+Intended status: Standards Track                            30 June 2021
+Expires: 1 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 December 2021.
+   This Internet-Draft will expire on 1 January 2022.
 
 Copyright Notice
 
@@ -393,11 +393,6 @@ Table of Contents
        Section 4.)  However, in general it is necessary for them to wait
        until (a) enough reports have been uploaded and (b) the collector
        has made a request.  (See Section 5.)
-
-   [TODO: Say that the helper is stateless.  To make this possible, it
-   encrypts any state it needs for verification and aggregation under a
-   symmetric key only it knows.  The leader keeps around the
-   ciphertext.]
 
    [TODO: Say that the protocol involves multiple helpers.  The downside
    of using secret sharing is that the protocol requires at least two
@@ -849,10 +844,8 @@ Table of Contents
 
 3.4.2.  Verifying and Aggregating Reports
 
-   [TODO: Specify how the helper encrypts its state.]
-
    After the client uploads a report to the leader, the leader and
-   helper verify in zero knowledge that the proof is valid.  The exact
+   helper verify in zero knowledge that the input is valid.  The exact
    procedure for doing so is protocol specific, but all protocols have
    the same basic structure.  In particular, the protocol is comprised
    of a sequence of _aggregate requests_ from the leader to the helper.
@@ -870,14 +863,13 @@ Table of Contents
    struct {
      PATask task;
      uint8 helper_hpke_config_id;
-     opaque helper_state<1..2^16>;
+     opaque cookie<0..2^16>;
      PAAggregateSubReq seq<1..2^24-1>;
    } PAAggregateReq;
 
-   The structure contains the PA task, the helper's HPKE config id, the
-   helper's encrypted state, and a sequence of _sub-requests_, each
-   corresponding to a unique client report.  Sub-requests are structured
-   as follows:
+   The structure contains the PA task, the helper's HPKE config id, a
+   cookie, and a sequence of _sub-requests_, each corresponding to a
+   unique client report.  Sub-requests are structured as follows:
 
    struct {
      opaque enc<0..2^16-1>;
@@ -913,13 +905,13 @@ Table of Contents
    the class of error scenarios that are addressable by running with
    multiple helpers.]
 
-   The response consists of the helper's updated, encrypted state and a
-   sequence of _sub-responses_, where the i-th sub-response corresponds
-   to the sub-request for each i.  The structure of each sub-response is
-   specific to the PA protocol:
+   The response consists of an updated cookie and a sequence of _sub-
+   responses_, where the i-th sub-response corresponds to the sub-
+   request for each i.  The structure of each sub-response is specific
+   to the PA protocol:
 
    struct {
-     opaque updated_helper_state<1..2^16>;
+     opaque cookie<0..2^16>;
      PAAggregateSubResp seq<1..2^24-1>;
    } PAAggregateResp;
 
@@ -931,10 +923,9 @@ Table of Contents
      }
    } PAAggregateSubResp;
 
-   To respond to an aggregate request, the helper first decrypts its
-   state.  Next, it handles each sub-request "PAAggregateSubReq" as
-   follows.  It first checks that checks that "PAAggregateSubReq.proto
-   == PAParam.proto".  If not, it aborts and alerts the leader with
+   The helper handles each sub-request "PAAggregateSubReq" as follows.
+   It first checks that checks that "PAAggregateSubReq.proto ==
+   PAParam.proto".  If not, it aborts and alerts the leader with
    "incorrect protocol for sub-request".  Otherwise, It computes the
    HPKE context as
 
@@ -946,20 +937,27 @@ Table of Contents
    encrypts its updated state and constructs its response to the
    aggregate request.
 
+3.4.2.1.1.  The Cookie
+
+   The cookie is an optional field that the uses to carry state accross
+   aggregate requests.  Typiclaly the cookie will be encrypted, but the
+   details of how it is encrypted and the information that it carries is
+   up to the implementation of the helper.
+
 3.4.2.2.  Output Share Request
 
    Once the aggregators have verified at least as many reports as
    required for the PA task, the leader issues an _output share request_
-   to the helper.  The helper responds to this request by decrypting its
-   state, extracting its output share, and re-encrypting the output
-   share under the collector's HPKE public key.
+   to the helper.  The helper responds to this request by extracting its
+   output share from its state and encrypting it under the collector's
+   HPKE public key.
 
    The leader sends a POST request to "[helper]/output_share" with the
    following message:
 
    struct {
      PATask task;
-     opaque helper_state<1..2^16>;
+     opaque cookie<0..2^16>;
    } PAOutputShareReq;
 
    To respond to valid output share requests, the helper begins by
