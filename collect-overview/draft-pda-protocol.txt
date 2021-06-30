@@ -863,13 +863,14 @@ Table of Contents
    struct {
      PATask task;
      uint8 helper_hpke_config_id;
-     opaque cookie<0..2^16>;
+     opaque helper_state<0..2^16>;
      PAAggregateSubReq seq<1..2^24-1>;
    } PAAggregateReq;
 
-   The structure contains the PA task, the helper's HPKE config id, a
-   cookie, and a sequence of _sub-requests_, each corresponding to a
-   unique client report.  Sub-requests are structured as follows:
+   The structure contains the PA task, the helper's HPKE config id, an
+   opaque _helper state_ string, and a sequence of _sub-requests_, each
+   corresponding to a unique client report.  Sub-requests are structured
+   as follows:
 
    struct {
      opaque enc<0..2^16-1>;
@@ -905,13 +906,13 @@ Table of Contents
    the class of error scenarios that are addressable by running with
    multiple helpers.]
 
-   The response consists of an updated cookie and a sequence of _sub-
-   responses_, where the i-th sub-response corresponds to the sub-
+   The response consists of the helper's updated state and a sequence of
+   _sub-responses_, where the i-th sub-response corresponds to the sub-
    request for each i.  The structure of each sub-response is specific
    to the PA protocol:
 
    struct {
-     opaque cookie<0..2^16>;
+     opaque helper_state<0..2^16>;
      PAAggregateSubResp seq<1..2^24-1>;
    } PAAggregateResp;
 
@@ -937,12 +938,14 @@ Table of Contents
    encrypts its updated state and constructs its response to the
    aggregate request.
 
-3.4.2.1.1.  The Cookie
+3.4.2.1.1.  Helper State
 
-   The cookie is an optional field that the uses to carry state accross
-   aggregate requests.  Typiclaly the cookie will be encrypted, but the
-   details of how it is encrypted and the information that it carries is
-   up to the implementation of the helper.
+   The helper state is an optional parameter of an aggregate request
+   that the can helper use to carry state accross requests.  At least
+   part of the state will usually need to be encrypted in order to
+   protect user privacy.  However, the details of precisely how the
+   state is encrypted and the information that it carries is up to the
+   implementation of the helper.
 
 3.4.2.2.  Output Share Request
 
@@ -957,7 +960,7 @@ Table of Contents
 
    struct {
      PATask task;
-     opaque cookie<0..2^16>;
+     opaque helper_state<0..2^16>;
    } PAOutputShareReq;
 
    To respond to valid output share requests, the helper begins by
