@@ -941,7 +941,7 @@ Table of Contents
 3.4.2.1.1.  Helper State
 
    The helper state is an optional parameter of an aggregate request
-   that the can helper use to carry state accross requests.  At least
+   that the can helper use to carry state across requests.  At least
    part of the state will usually need to be encrypted in order to
    protect user privacy.  However, the details of precisely how the
    state is encrypted and the information that it carries is up to the
@@ -960,12 +960,19 @@ Table of Contents
 
    struct {
      PATask task;
+     uint64 batch_start; // Same as PACollectReq.batch_start.
+     Uint64 batch_end;   // Same as PACollectReq.batch_end.
      opaque helper_state<0..2^16>;
    } PAOutputShareReq;
 
-   To respond to valid output share requests, the helper begins by
-   decrypting its state.  It then constructs its output share, which has
-   the following structure:
+   To respond to valid output share requests, the helper first checks
+   that "batch_start" and "batch_end" are multiples of
+   "task.batch_window" and that "batch_end - batch_start >=
+   task.batch_window".  Next, it extracts from its state the set of
+   input shares that fall in the window "[batch_start, batch_end)".  If
+   the size of the batch is less than "task.batch_size", then it aborts
+   and alerts the leader with "insufficient data".  Otherwise, it
+   computes its output share, which has the following structure:
 
    struct {
      PAProto proto;
