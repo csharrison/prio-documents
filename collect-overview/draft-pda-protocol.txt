@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                            30 June 2021
-Expires: 1 January 2022
+Intended status: Standards Track                             1 July 2021
+Expires: 2 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 January 2022.
+   This Internet-Draft will expire on 2 January 2022.
 
 Copyright Notice
 
@@ -384,15 +384,15 @@ Table of Contents
        share and the helper's encrypted share are referred to
        collectively as the client's _report_.
 
-   2.  *Collect:* The collector makes a request to the leader in order
-       to obtain the final output of the protocol.  Before the output
-       can be computed, the aggregators (i.e, the leader and helpers)
-       need to have verified and aggregated a sufficient number of
-       inputs.  Depending on the PA protocol, it may be possible for the
-       aggregators to do so immediately when reports are uploaded.  (See
-       Section 4.)  However, in general it is necessary for them to wait
-       until (a) enough reports have been uploaded and (b) the collector
-       has made a request.  (See Section 5.)
+   2.  *Collect:* The collector makes one or more requests to the leader
+       in order to obtain the final output of the protocol.  Before the
+       output can be computed, the aggregators (i.e, the leader and
+       helpers) need to have verified and aggregated a sufficient number
+       of inputs.  Depending on the PA protocol, it may be possible for
+       the aggregators to do so immediately when reports are uploaded.
+       (See Section 4.)  However, in general it is necessary for them to
+       wait until (a) enough reports have been uploaded and (b) the
+       collector has made a request.  (See Section 5.)
 
    [TODO: Say that the protocol involves multiple helpers.  The downside
    of using secret sharing is that the protocol requires at least two
@@ -945,7 +945,7 @@ Table of Contents
    part of the state will usually need to be encrypted in order to
    protect user privacy.  However, the details of precisely how the
    state is encrypted and the information that it carries is up to the
-   implementation of the helper.
+   helper implementation.
 
 3.4.2.2.  Output Share Request
 
