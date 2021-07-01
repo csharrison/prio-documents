@@ -771,7 +771,7 @@ Table of Contents
      Figure 3: Flow of the collect process with N collect requests and
                  L aggregate requests per collect request.
 
-   [TODO: Decide how the collector's request is authenticated.]
+   [TODO: Decide if and how the collector's request is authenticated.]
 
    The collector interacts with the leader to produce the final
    aggregate output.  This process consists of a sequence of _collect
