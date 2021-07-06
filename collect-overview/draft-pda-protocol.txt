@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                             1 July 2021
-Expires: 2 January 2022
+Intended status: Standards Track                             6 July 2021
+Expires: 7 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 January 2022.
+   This Internet-Draft will expire on 7 January 2022.
 
 Copyright Notice
 
@@ -435,7 +435,7 @@ Table of Contents
 
    struct {
      uint16 version;
-     uint8 id[16];
+     opaque id[16];
    } PATask;
 
    The first field, "version" specifies the version of this document.
@@ -783,6 +783,10 @@ Table of Contents
    collect request.  This procedure is described below in Section 3.4.2.
 
 3.4.1.  Collect Request
+
+   [TODO: Decide whether to specify things in terms of functions. @ekr
+   pointed out that it would be clearer to just talk about protocol
+   messages.]
 
    The collect protocol is an iterative procedure driven by the
    collector and parameterized by a PAParam.  At a high level, it
@@ -1585,7 +1589,7 @@ Table of Contents
               "Hybrid Public Key Encryption", Work in Progress,
               Internet-Draft, draft-irtf-cfrg-hpke-09, 26 May 2021,
               <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-
-              hpke-09.txt>.
+              hpke-09>.
 
 10.2.  Informative References
 
