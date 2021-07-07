@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                             6 July 2021
-Expires: 7 January 2022
+Intended status: Standards Track                             7 July 2021
+Expires: 8 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 January 2022.
+   This Internet-Draft will expire on 8 January 2022.
 
 Copyright Notice
 
@@ -895,6 +895,12 @@ Table of Contents
      }
    } PAAggregateSubReq;
 
+   [TODO: @ekr points out that the "proto" byte may not be needed in
+   this message. because the protocol should be the same for each of the
+   sub-requests.  Syntactically, we can express the selector as
+   "PAParam.proto", where "PAParam" is the PA parameters determined by
+   the task ID.]
+
    The "enc" field is the helper's encapsulated HPKE context sent in the
    report.  (This field is marked optional because it is usually only
    needed for the first aggregate request.  [TODO: Decide how to mark
@@ -915,6 +921,9 @@ Table of Contents
    the class of error scenarios that are addressable by running with
    multiple helpers.]
 
+   [TODO: Don't require all sub-requests to pertain to the same HPKE
+   config.]
+
    The response consists of the helper's updated state and a sequence of
    _sub-responses_, where the i-th sub-response corresponds to the sub-
    request for each i.  The structure of each sub-response is specific
@@ -932,6 +941,9 @@ Table of Contents
        case hits: HitsAggregateSubResp;
      }
    } PAAggregateSubResp;
+
+   [TODO: Consider removing the "proto" byte from this message and just
+   use the PAParam implied by the request.]
 
    The helper handles each sub-request "PAAggregateSubReq" as follows.
    It first checks that checks that "PAAggregateSubReq.proto ==
@@ -1587,9 +1599,9 @@ Table of Contents
    [I-D.irtf-cfrg-hpke]
               Barnes, R. L., Bhargavan, K., Lipp, B., and C. A. Wood,
               "Hybrid Public Key Encryption", Work in Progress,
-              Internet-Draft, draft-irtf-cfrg-hpke-09, 26 May 2021,
+              Internet-Draft, draft-irtf-cfrg-hpke-10, 7 July 2021,
               <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-
-              hpke-09>.
+              hpke-10>.
 
 10.2.  Informative References
 
