@@ -725,7 +725,7 @@ Table of Contents
    Note that only the helper's share is encrypted, and that the leader
    share is sent in plaintext.  (Confidentiality of the leader's share
    is provided by the server-authenticated secure channel over which the
-   request is made..)
+   request is made.)
 
    [TODO: Encrypt the leader's share as well, as discussed in issue#69.]
 
