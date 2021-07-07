@@ -533,35 +533,33 @@ Table of Contents
    We assume the following conditions hold before execution of any PA
    task begins:
 
-   1.   The aggregators agree on a set of PA tasks, as well as the PA
-        parameters associated to each task.
+   1.  The aggregators agree on a set of PA tasks, as well as the PA
+       parameters associated to each task.
 
-   2.   Each aggregator has a clock that is roughly in sync with true
-        time, i.e., within the batch window specified by the PA
-        parameters.  (This is necessary to prevent the same report from
-        appearing in multiple batches.)
+   2.  Each aggregator has a clock that is roughly in sync with true
+       time, i.e., within the batch window specified by the PA
+       parameters.  (This is necessary to prevent the same report from
+       appearing in multiple batches.)
 
-   3.   Each client has selected a PA task for which it will upload a
-        report.
+   3.  Each client has selected a PA task for which it will upload a
+       report.
 
-   4.   Each client knows the URL of the leader endpoint, e.g.,
-        "example.com/metrics".  We write this URL as "[leader]" below.
-        (We write "[helper]" for a helper's URL.)
+   4.  Each client knows the URL of the leader endpoint, e.g.,
+       "example.com/metrics".  We write this URL as "[leader]" below.
+       (We write "[helper]" for a helper's URL.)
 
-   5.   Each client and the leader can establish a leader-authenticated
-        secure channel.
+   5.  Each client and the leader can establish a leader-authenticated
+       secure channel.
 
-   6.   The leader and each helper can establish a helper-authenticated
-        secure channel.
+   6.  The leader and each helper can establish a helper-authenticated
+       secure channel.
 
-   7.   The collector and leader can establish a leader-authenticated
-        secure channel.
+   7.  The collector and leader can establish a leader-authenticated
+       secure channel.
 
-   8.   The collector has chosen an HPKE key pair.
+   8.  The collector has chosen an HPKE key pair.
 
-   9.   Each helper has chosen an HPKE key pair.
-
-   10.  Each helper has chosen a key for an AEAD scheme.
+   9.  Each helper has chosen an HPKE key pair.
 
    [TODO: It would be clearer to include a "pre-conditions" section
    prior to each "phase" of the protocol.]
