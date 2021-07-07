@@ -668,10 +668,6 @@ Table of Contents
    SetupBaseS() will be, as well as the aad for context.Seal().  The aad
    might be the entire "transcript" between the client and helper.]
 
-   [OPEN ISSUE: Is it safe to generate the proof once, then secret-share
-   between each (leader, helper) pair?  Probably not in general, but
-   maybe for Prio?]
-
    [OPEN ISSUE: allow server to send joint randomness in
    UploadStartResp, and then enforce uniqueness via double-spend state
    or something else (see issue#48).]
