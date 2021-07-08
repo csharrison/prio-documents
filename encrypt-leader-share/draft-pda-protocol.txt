@@ -676,22 +676,10 @@ Table of Contents
 
    To generate the report, the client begins by encoding its
    measurements as an input for the PA protocol and splitting it into
-   input shares according to the protocol.  Input shares have the
-   following structure:
-
-   struct {
-     select (PAParam.proto, aggregator_type) {
-       case prio, leader: PrioLeaderInputShare;
-       case prio, helper: PrioHelperInputShare;
-       case hits, leader: HitsLeaderInputShare;
-       case hits, helper: HitsHelperInputShare;
-     }
-   } PAInputShare;
-
-   [TODO: Not sure if the use of "aggregator_type" above is
-   syntactically correct.]
-
-   To encrypt an input share, the client first generates an HPKE
+   input shares.  (Note that the structure of each input share depends
+   on the PA protocol in use, its parameters, and the role of
+   aggregator, i.e., whether the aggregator is a leader or helper.)  To
+   encrypt an input share, the client first generates an HPKE
    [I-D.irtf-cfrg-hpke] context for the aggregator by running
 
    enc, context = SetupBaseS(pk, [TODO])
