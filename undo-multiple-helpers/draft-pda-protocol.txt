@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                             7 July 2021
-Expires: 8 January 2022
+Intended status: Standards Track                             8 July 2021
+Expires: 9 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2022.
+   This Internet-Draft will expire on 9 January 2022.
 
 Copyright Notice
 
@@ -406,9 +406,12 @@ Table of Contents
    server is always authenticated.
 
    [TODO: Decide how to provide mutual authentication in leader-to-
-   helper and aggregator-to-collector connections.  One option is to use
+   helper and collector-to-leader connections.  One option is to use
    client certificates for TLS; another is to have the leader sign its
-   messages directly, as in Prio v2.]
+   messages directly, as in Prio v2.  For collector-to-leader
+   connections, we may just have this be up to deployment.  (For
+   instance, the collector might authenticate themselves by logging into
+   a website that has some trust relationship with the leader.)]
 
    [TODO: @chris-wood suggested we specify APIs for producing and
    consuming each of the messages in the protocol.  Specific PA
@@ -454,6 +457,7 @@ Table of Contents
      uint64 batch_size;
      uint64 batch_window;
      PAProto proto;
+     uint16 length; // Length of the remainder.
      select (PAClientParam.proto) {
        case prio: PrioParam;
        case hits: HitsParam;
@@ -524,35 +528,35 @@ Table of Contents
    We assume the following conditions hold before execution of any PA
    task begins:
 
-   1.   The aggregators agree on a set of PA tasks, as well as the PA
-        parameters associated to each task.
+   1.  The aggregators agree on a set of PA tasks, as well as the PA
+       parameters associated to each task.
 
-   2.   Each aggregator has a clock that is roughly in sync with true
-        time, i.e., within the batch window specified by the PA
-        parameters.  (This is necessary to prevent the same report from
-        appearing in multiple batches.)
+   2.  Each aggregator has a clock that is roughly in sync with true
+       time, i.e., within the batch window specified by the PA
+       parameters.  (This is necessary to prevent the same report from
+       appearing in multiple batches.)
 
-   3.   Each client has selected a PA task for which it will upload a
-        report.
+   3.  Each client has selected a PA task for which it will upload a
+       report.
 
-   4.   Each client knows the URL of the leader endpoint, e.g.,
-        "example.com/metrics".  We write this URL as "[leader]" below.
-        (We write "[helper]" for a helper's URL.)
+   4.  Each client knows the URL of the leader endpoint, e.g.,
+       "example.com/metrics".  We write this URL as "[leader]" below.
+       (We write "[helper]" for a helper's URL.)
 
-   5.   Each client and the leader can establish a leader-authenticated
-        secure channel.
+   5.  Each client and the leader can establish a leader-authenticated
+       secure channel.
 
-   6.   The leader and each helper can establish a helper-authenticated
-        secure channel.
+   6.  The leader and each helper can establish a helper-authenticated
+       secure channel.
 
-   7.   The collector and leader can establish a leader-authenticated
-        secure channel.
+   7.  The collector and leader can establish a leader-authenticated
+       secure channel.
 
-   8.   The collector has chosen an HPKE key pair.
+   8.  The collector has chosen an HPKE configuration and corresponding
+       secret key.
 
-   9.   Each helper has chosen an HPKE key pair.
-
-   10.  Each helper has chosen a key for an AEAD scheme.
+   9.  The helper has chosen an HPKE configuration and corresponding
+       secret key.
 
    [TODO: It would be clearer to include a "pre-conditions" section
    prior to each "phase" of the protocol.]
@@ -582,12 +586,6 @@ Table of Contents
    allows clients to make multiple requests through a proxy, so these
    kinds of use cases should work.]
 
-   [NOTE: @cjpatton: Breaking the upload phase into two requests is
-   useful for supporting Prio-like proof systems in which the leader
-   sends the client a "challenge" it uses to generate the proof.  (See
-   the SIMD construction of [BBCp19], Section 5.2.  Here, the
-   "challenge" is a randomly generated field element.)]
-
 3.3.1.  Upload Start Request
 
    The client sends a GET request to
@@ -613,9 +611,6 @@ Table of Contents
 
    The leader's response to malformed requests is specified in
    Section 3.6.
-
-   [TODO: Maybe drop the protocol-specific message and make this an
-   idempotent GET (see issue#48).]
 
 3.3.2.  Upload Finish Request
 
@@ -716,6 +711,8 @@ Table of Contents
    share is sent in plaintext.  (Confidentiality of the leader's share
    is provided by the server-authenticated secure channel over which the
    request is made.)
+
+   [TODO: Encrypt the leader's share as well, as discussed in issue#69.]
 
    The leader responds to well-formed requests to
    "[leader]/upload_finish" with status 200 and an empty body.
@@ -837,7 +834,8 @@ Table of Contents
    the same basic structure.  In particular, the protocol is comprised
    of a sequence of _aggregate requests_ from the leader to the helper.
    At the end of this procedure, the leader and helper will have have
-   aggregated a set of valid client inputs.
+   aggregated a set of valid client inputs (though not necessarily a
+   complete batch).
 
 3.4.2.1.  Aggregate Request
 
