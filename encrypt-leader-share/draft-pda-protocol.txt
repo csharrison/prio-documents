@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                             7 July 2021
-Expires: 8 January 2022
+Intended status: Standards Track                             8 July 2021
+Expires: 9 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2022.
+   This Internet-Draft will expire on 9 January 2022.
 
 Copyright Notice
 
@@ -651,15 +651,14 @@ Table of Contents
    struct {
      PATask task; // Equal to PAUploadStartReq.task
      uint64 time; // UNIX time (in seconds).
-     PAEncryptedInputShare leader_input_share;
-     PAEncryptedInputShare helper_input_share;
+     PAEncryptedInputShare encrypted_input_shares<1..2^16-1>;
    } PAUploadFinishReq;
 
    We sometimes refer to this message as the _report_. The message
-   contains the "task" fields of the previous request.  In addition, it
-   includes the time (in seconds since the beginning of UNIX time) at
-   which the report was generated, and the leader and helper share, both
-   of which are structured as follows:
+   contains the "task" fields of the previous request.  It also includes
+   the time (in seconds since the beginning of UNIX time) at which the
+   report was generated.  The rest of the message consists of the
+   encrypted input shares, each of which has the following structure:
 
    struct {
      uint8 config_id;
@@ -676,31 +675,34 @@ Table of Contents
    *  "payload" is the encrypted input share.
 
    To generate the report, the client begins by encoding its
-   measurements as an input for the PA protocol and splitting it into a
-   leader share "leader_share" and a helper share "helper_share".  (This
-   procedure is specified by the PA protocol.)  Each input share has the
-   following format:
+   measurements as an input for the PA protocol and splitting it into
+   input shares according to the protocol.  Input shares have the
+   following structure:
 
    struct {
-     select (PAParam.proto) { // PAParam for the PA task
-       case prio: PrioInputShare;
-       case hits: hitsInputShare;
+     select (PAParam.proto, aggregator_type) {
+       case prio, leader: PrioLeaderInputShare;
+       case prio, helper: PrioHelperInputShare;
+       case hits, leader: HitsLeaderInputShare;
+       case hits, helper: HitsHelperInputShare;
      }
    } PAInputShare;
 
-   Next, the client generates an HPKE [I-D.irtf-cfrg-hpke] context for
-   the leader and helper by running
+   [TODO: Not sure if the use of "aggregator_type" above is
+   syntactically correct.]
 
-   leader_enc, leader_context = SetupBaseS(leader_pk, [TODO])
-   helper_enc, helper_context = SetupBaseS(helper_pk, [TODO])
+   To encrypt an input share, the client first generates an HPKE
+   [I-D.irtf-cfrg-hpke] context for the aggregator by running
 
-   "leader_pk" and "helper_pk" are, respectively, the leader and helper
-   public key. "leader_enc" and "helper_enc" are the encapsulated HPKE
-   context of each aggregator.  Finally, the payloads of the encrypted
-   input shares are computed as
+   enc, context = SetupBaseS(pk, [TODO])
 
-   leader_payload = leader_context.Seal(leader_share, [TODO])
-   helper_payload = helper_context.Seal(helper_share, [TODO])
+   where "pk" is the aggregator's public key. "enc" is the encapsulate
+   HPKE context and "context" is the HPKE context used by the client for
+   encryption.  The payload is encrypted as
+
+   payload = context.Seal(input_share, [TODO])
+
+   where "input_share" is the aggregator's input share.
 
    [TODO: Fully specify encryption of the shares.  We need to make sure
    we authenticate things like the PA parameters and the report
