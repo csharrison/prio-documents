@@ -647,7 +647,7 @@ Table of Contents
    The payload is structured as follows:
 
    struct {
-     PATask task; // Equal to PAUploadStartReq.task
+     PATask task;
      uint64 time; // UNIX time (in seconds).
      PAEncryptedInputShare encrypted_input_shares<1..2^16-1>;
    } PAUploadFinishReq;
