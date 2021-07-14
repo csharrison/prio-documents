@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                            12 July 2021
-Expires: 13 January 2022
+Intended status: Standards Track                            14 July 2021
+Expires: 15 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 January 2022.
+   This Internet-Draft will expire on 15 January 2022.
 
 Copyright Notice
 
@@ -597,21 +597,16 @@ Table of Contents
 
    struct {
      PATaskID task_id;
-     PAReport reports<1..2^24-1>;
-   } PAUploadReq;
-
-   This message consists of a task id and any number of _reports_ for
-   the task.  Reports are structured as:
-
-   struct {
      uint64 time; // UNIX time (in seconds).
      PAEncryptedInputShare encrypted_input_shares<1..2^16-1>;
-   } PAReport;
+   } PAUploadReq;
 
-   where "time" is the time (in seconds since the beginning of UNIX
-   time) at which the report was generated and "encrypted_input_shares"
-   is the sequence of encrypted input shares, each intended for one of
-   the aggregators.  These have the following structure:
+   We sometimes refer to this message as the _report_. The message
+   contains the task id derived from the PA parameters.  It also
+   includes the time (in seconds since the beginning of UNIX time) at
+   which the report was generated.  The rest of the message consists of
+   the encrypted input shares, each of which has the following
+   structure:
 
    struct {
      uint8 config_id;
@@ -627,13 +622,13 @@ Table of Contents
 
    *  "payload" is the encrypted input share.
 
-   To generate a report, the client begins by encoding its measurements
-   as an input for the PA protocol and splitting it into input shares.
-   (Note that the structure of each input share depends on the PA
-   protocol in use, its parameters, and the role of aggregator, i.e.,
-   whether the aggregator is a leader or helper.)  To encrypt an input
-   share, the client first generates an HPKE [I-D.irtf-cfrg-hpke]
-   context for the aggregator by running
+   To generate the report, the client begins by encoding its
+   measurements as an input for the PA protocol and splitting it into
+   input shares.  (Note that the structure of each input share depends
+   on the PA protocol in use, its parameters, and the role of
+   aggregator, i.e., whether the aggregator is a leader or helper.)  To
+   encrypt an input share, the client first generates an HPKE
+   [I-D.irtf-cfrg-hpke] context for the aggregator by running
 
    enc, context = SetupBaseS(pk, [TODO])
 
@@ -654,14 +649,6 @@ Table of Contents
    The leader responds to well-formed requests to "[leader]/upload" with
    status 200 and an empty body.  Malformed requests are handled as
    described in Section 3.6.
-
-3.3.2.1.  Batched Uploading
-
-   Usually the client's upload request will consist of a single report,
-   but there are applications for which it's useful to be able to upload
-   many reports in the same request.  For example, reports might be
-   collected from a set of clients and uploaded to the leader by some
-   entity in the middle.
 
 3.4.  Collect
 
