@@ -1221,6 +1221,16 @@ Such a proxy could also remove auxiliary information from inputs (such as source
 IP or HTTP user agent), which could otherwise identify participating clients or
 permit some attacks on robustness.
 
+## Batch sizes and privacy
+
+An important parameter of a PDA deployment is the minimum batch size. If an
+aggregation includes too few inputs, then the outputs can reveal information
+about individual participants. Aggregators use the batch size field of the
+`PDAParams` structure to enforce minimum batch size during the collect protocol,
+but server implementations may also opt out of participating in a PDA task if
+the minimum batch size is too small. This document does not specify how to
+choose minimum batch sizes.
+
 ## Multiple protocol runs
 
 Prio is _robust_ against malicious clients, and _private_ against malicious
