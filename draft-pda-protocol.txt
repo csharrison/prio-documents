@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                            13 July 2021
-Expires: 14 January 2022
+Intended status: Standards Track                            14 July 2021
+Expires: 15 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 14 January 2022.
+   This Internet-Draft will expire on 15 January 2022.
 
 Copyright Notice
 
@@ -634,8 +634,10 @@ Table of Contents
    We sometimes refer to this message as the _report_. The message
    contains the "task_id" of the previous request.  It also includes the
    time (in seconds since the beginning of UNIX time) at which the
-   report was generated.  The rest of the message consists of the
-   encrypted input shares, each of which has the following structure:
+   report was generated.  This field is present to ensure that each
+   report is included in at most one batch.  The rest of the message
+   consists of the encrypted input shares, each of which has the
+   following structure:
 
    struct {
      uint8 config_id;
@@ -880,7 +882,7 @@ Table of Contents
    The helper handles each sub-request "PAAggregateSubReq" as follows.
    It first checks that checks that "PAAggregateSubReq.proto ==
    PAParam.proto".  If not, it aborts and alerts the leader with
-   "incorrect protocol for sub-request".  Otherwise, It computes the
+   "incorrect protocol for sub-request".  Otherwise, it computes the
    HPKE context as
 
    context = SetupBaseR(PAAggregateSubReq.enc, sk, [TODO])
