@@ -602,11 +602,12 @@ Table of Contents
    } PAUploadReq;
 
    We sometimes refer to this message as the _report_. The message
-   contains the task id derived from the PA parameters.  It also
-   includes the time (in seconds since the beginning of UNIX time) at
-   which the report was generated.  The rest of the message consists of
-   the encrypted input shares, each of which has the following
-   structure:
+   contains the "task_id" of the previous request.  It also includes the
+   time (in seconds since the beginning of UNIX time) at which the
+   report was generated.  This field is present to ensure that each
+   report is included in at most one batch.  The rest of the message
+   consists of the encrypted input shares, each of which has the
+   following structure:
 
    struct {
      uint8 config_id;
