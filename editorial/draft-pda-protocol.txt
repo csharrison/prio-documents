@@ -207,9 +207,9 @@ Table of Contents
    servers.  We call the servers the _aggregators_. Each client's input
    to the protocol is a set of measurements (e.g., counts of some user
    behavior).  Given the input set of measurements "x_1, ..., x_n" held
-   by "n" users, the goal of a _private aggregation (PDA) protocol_ is
-   to compute "y = F(x_1, ..., x_n)" for some aggregation function "F"
-   while revealing nothing else about the measurements.
+   by "n" users, the goal of a _private data aggregation (PDA) protocol_
+   is to compute "y = F(x_1, ..., x_n)" for some aggregation function
+   "F" while revealing nothing else about the measurements.
 
 2.1.  Private aggregation via secret sharing
 
