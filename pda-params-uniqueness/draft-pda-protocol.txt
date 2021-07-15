@@ -453,8 +453,9 @@ Table of Contents
 
    opaque Url<1..2^16-1>;
 
-   *  "nonce": A sequence of bytes chosen to ensure that two otherwise
-      identical "PDAParam" instances will have distinct "PDATaskID"s.
+   *  "nonce": A sequence of random bytes used to ensure that two
+      otherwise identical "PDAParam" instances will have distinct
+      "PDATaskID"s.
 
    *  "leader_url": The leader's endpoint URL.
 
