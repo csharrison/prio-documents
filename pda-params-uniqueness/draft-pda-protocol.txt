@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                            14 July 2021
-Expires: 15 January 2022
+Intended status: Standards Track                            15 July 2021
+Expires: 16 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 January 2022.
+   This Internet-Draft will expire on 16 January 2022.
 
 Copyright Notice
 
@@ -435,7 +435,7 @@ Table of Contents
    the clients' measurements:
 
    struct {
-     opaque unique_id[16];
+     opaque nonce[16];
      Url leader_url;
      Url helper_url;
      HpkeConfig collector_config; // [TODO: Remove this?]
@@ -453,9 +453,8 @@ Table of Contents
 
    opaque Url<1..2^16-1>;
 
-   *  "unique_id": A sequence of random bytes that uniquely identifies
-      the PDA task, included to ensure that two otherwise identical
-      "PDAParam" instances will have distinct PDATaskIDs.
+   *  "nonce": A sequence of bytes chosen to ensure that two otherwise
+      identical "PDAParam" instances will have distinct "PDATaskID"s.
 
    *  "leader_url": The leader's endpoint URL.
 
@@ -474,13 +473,13 @@ Table of Contents
    *  "proto": The PDA protocol, e.g., Prio or Hits.  The rest of the
       structure contains the protocol specific parameters.
 
-   Each task has a unique _task id_ derived from the PDA parameters:
+   Each task has a unique _task ID_ derived from the PDA parameters:
 
    opaque PDATaskID[32];
 
-   The task id is the SHA-256 digest over the JSON representation of the
-   "PDAParam" structure, canonicalized according to the JSON
-   Canonicalization Scheme [rfc8785].
+   The task ID is derived using the following procedure:
+
+   task_id = SHA-256(PDAParam)
 
 3.1.2.  HPKE key configuration
 
@@ -816,7 +815,7 @@ Table of Contents
    The helper handles well-formed requests as follows.  (As usual,
    malformed requests are handled as described in Section 3.6.)  It
    first looks for the PDA parameters "PDAParam" for which
-   "PDAAggregateReq.task_id" is equal to the task id derived from
+   "PDAAggregateReq.task_id" is equal to the task ID derived from
    "PDAParam".
 
    The response consists of the helper's updated state and a sequence of
@@ -950,7 +949,7 @@ Table of Contents
 
    *  Each POST request to an aggregator contains a "PDATaskID".  If the
       aggregator does not recognize the task, i.e., it can't find a
-      "PDAParam" for which the derived task id matches the "PDATaskID",
+      "PDAParam" for which the derived task ID matches the "PDATaskID",
       then it aborts and alerts the peer with "unrecognized task".
 
 4.  Prio
@@ -1499,11 +1498,6 @@ Table of Contents
               Internet-Draft, draft-irtf-cfrg-hpke-10, 7 July 2021,
               <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-
               hpke-10>.
-
-   [rfc8785]  Rundgren, A., Jordan, B., and S. Erdtman, "JSON
-              Canonicalization Scheme (JCS)", RFC 8785,
-              DOI 10.17487/RFC8785, June 2020,
-              <https://datatracker.ietf.org/doc/html/rfc8785>.
 
 10.2.  Informative References
 
