@@ -100,14 +100,14 @@ document.
    client could report clicks when none occurred.
 1. Input: The measurement (or measurements) emitted by a client, before any
    encryption or secret sharing scheme is applied.
-1. Input share: one of the shares output by feeding an input into a secret
+1. Input share: One of the shares output by feeding an input into a secret
    sharing scheme. Each share is to be transmitted to one of the participating
    aggregators.
 1. Input validation protocol: The protocol executed by the client and
    aggregators in order to validate the client's input without leaking its value
    to the aggregators.
 1. Invalid input: An input for which the input validation protocol fails. For
-   example, if the input is meant to be a  bit vectors, then `[2, 1, 0]` is
+   example, if the input is meant to be bit vectors, then `[2, 1, 0]` is
    invalid.
 1. Measurement: A single value (e.g., a count) being reported by a client.
    Multiple measurements may be grouped into a single protocol input.
@@ -124,8 +124,8 @@ document.
    client's input.
 1. Proof share: A share of a proof, used by an aggregator during the
    input-validation protocol.
-1. Report: Uploaded to the leader from the client. A report contains the
-   secret-shared and encrypted input and proof.
+1. Report: Uploaded to the leader from the client. A report is encrypted, containing both input
+   shares and proof shares.
 1. Server: An aggregator or collector.
 
 # Overview {#overview}
