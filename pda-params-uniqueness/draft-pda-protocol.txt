@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                            15 July 2021
-Expires: 16 January 2022
+Intended status: Standards Track                            20 July 2021
+Expires: 21 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 January 2022.
+   This Internet-Draft will expire on 21 January 2022.
 
 Copyright Notice
 
@@ -453,9 +453,11 @@ Table of Contents
 
    opaque Url<1..2^16-1>;
 
-   *  "nonce": A sequence of random bytes used to ensure that two
+   *  "nonce": A unique sequence of bytes used to ensure that two
       otherwise identical "PDAParam" instances will have distinct
-      "PDATaskID"s.
+      "PDATaskID"s.  It is RECOMMENDED that this be set to a random
+      16-byte string derived from a cryptographically secure pseurandom
+      number generator.
 
    *  "leader_url": The leader's endpoint URL.
 
@@ -478,9 +480,12 @@ Table of Contents
 
    opaque PDATaskID[32];
 
-   The task ID is derived using the following procedure:
+   The task ID of a "PDAParam" `is derived using the following
+   procedure:
 
-   task_id = SHA-256(PDAParam)
+   task_id = SHA-256(param)
+
+   Where "SHA-256" is as specified in [FIPS180-4].
 
 3.1.2.  HPKE key configuration
 
@@ -1492,6 +1497,13 @@ Table of Contents
 10.  References
 
 10.1.  Normative References
+
+   [FIPS180-4]
+              Department of Commerce, National Institute of Standards
+              and Technology, U.S., "NIST FIPS 180-4, Secure Hash
+              Standard", March 2012,
+              <http://csrc.nist.gov/publications/fips/fips180-4/fips-
+              180-4.pdf>.
 
    [I-D.irtf-cfrg-hpke]
               Barnes, R. L., Bhargavan, K., Lipp, B., and C. A. Wood,
