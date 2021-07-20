@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                            15 July 2021
-Expires: 16 January 2022
+Intended status: Standards Track                            20 July 2021
+Expires: 21 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 January 2022.
+   This Internet-Draft will expire on 21 January 2022.
 
 Copyright Notice
 
@@ -454,6 +454,8 @@ Table of Contents
 
    Duration uint64; /* Number of seconds elapsed between two instants */
 
+   Time uint64; /* seconds elapsed since start of UNIX epoch */
+
    *  "leader_url": The leader's endpoint URL.
 
    *  "helper_url": The helper's endpoint URL.
@@ -602,8 +604,6 @@ Table of Contents
      Time time;
      PDAEncryptedInputShare encrypted_input_shares<1..2^16-1>;
    } PDAUploadReq;
-
-   Time uint64; /* seconds elapsed since start of UNIX epoch */
 
    We sometimes refer to this message as the _report_. The message
    contains the "task_id" of the previous request.  It also includes the
