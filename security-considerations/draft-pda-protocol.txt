@@ -4,8 +4,8 @@
 
 HTTPBIS                                                        S. People
 Internet-Draft                                                 Somewhere
-Intended status: Standards Track                            14 July 2021
-Expires: 15 January 2022
+Intended status: Standards Track                            21 July 2021
+Expires: 22 January 2022
 
 
                    Private Data Aggregation Protocol
@@ -40,7 +40,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 January 2022.
+   This Internet-Draft will expire on 22 January 2022.
 
 Copyright Notice
 
@@ -100,12 +100,13 @@ Table of Contents
        8.1.4.  Collector
        8.1.5.  Aggregator collusion
        8.1.6.  Attacker on the network
-     8.2.  Authenticating and anonymizing client proxies
-     8.3.  Batch sizes and privacy
-     8.4.  Multiple protocol runs
-     8.5.  Infrastructure diversity
-     8.6.  System requirements
-       8.6.1.  Data types
+     8.2.  Client authentication
+     8.3.  Anonymizing proxies
+     8.4.  Batch sizes and privacy
+     8.5.  Multiple protocol runs
+     8.6.  Infrastructure diversity
+     8.7.  System requirements
+       8.7.1.  Data types
    9.  IANA Considerations
    10. References
      10.1.  Normative References
@@ -1405,24 +1406,35 @@ Table of Contents
    [BBG+19] that account for this; we need to figure out if they're
    practical.]]
 
-8.2.  Authenticating and anonymizing client proxies
+8.2.  Client authentication
 
    Attackers can impersonate Prio clients and submit large amounts of
    false input in order to spoil aggregations.  This is a risk that will
    be acceptable to many deployments where ease of participation in
    aggregations is most valuable, but others could mitigate this problem
    by requiring client authentication.  This could be achieved by having
-   clients submit reports over an authenticated channel to a proxy
-   server which would then use Oblivous HTTP
-   [I-D.thomson-http-oblivious] to forward inputs to the PDA leader,
-   without requiring any server participating in PDA to be aware of
-   whatever client authentication or attestation scheme is in use.
+   clients submit reports to the leader over a client authenticated
+   channel.  Note that having clients authenticate to aggregators
+   compromises privacy, which can be remedied by introducing an
+   anonymizing proxy (see Section 8.3).
 
-   Such a proxy could also remove auxiliary information from inputs
-   (such as source IP or HTTP user agent), which could otherwise
-   identify participating clients or permit some attacks on robustness.
+   [TODO: update this to discuss clients sending reports directly to
+   helper as well as leader if we end up choosing to go that direction.
+   See issue #89]
 
-8.3.  Batch sizes and privacy
+8.3.  Anonymizing proxies
+
+   Client reports can contain auxiliary information such as source IP,
+   HTTP user agent or in deployments which use it, client authentication
+   information, which could be used by aggregators to identify
+   participating clients or permit some attacks on robustness.  This
+   auxiliary information could be removed by having clients submit
+   reports to an anonymizing proxy server which would then use Oblivous
+   HTTP [I-D.thomson-http-oblivious] to forward inputs to the PDA
+   leader, without requiring any server participating in PDA to be aware
+   of whatever client authentication or attestation scheme is in use.
+
+8.4.  Batch sizes and privacy
 
    An important parameter of a PDA deployment is the minimum batch size.
    If an aggregation includes too few inputs, then the outputs can
@@ -1433,7 +1445,7 @@ Table of Contents
    size is too small.  This document does not specify how to choose
    minimum batch sizes.
 
-8.4.  Multiple protocol runs
+8.5.  Multiple protocol runs
 
    Prio is _robust_ against malicious clients, and _private_ against
    malicious servers, but cannot provide robustness against malicious
@@ -1449,7 +1461,7 @@ Table of Contents
    (https://github.com/abetterinternet/prio-documents/issues/22) for
    discussion.
 
-8.5.  Infrastructure diversity
+8.6.  Infrastructure diversity
 
    Prio deployments should ensure that aggregators do not have common
    dependencies that would enable a single vendor to reassemble inputs.
@@ -1458,9 +1470,9 @@ Table of Contents
    cloud vendor would be able to reassemble all the input shares and
    defeat privacy.
 
-8.6.  System requirements
+8.7.  System requirements
 
-8.6.1.  Data types
+8.7.1.  Data types
 
 9.  IANA Considerations
 
