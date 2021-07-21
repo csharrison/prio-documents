@@ -1205,21 +1205,30 @@ collude and break soundness. Is this a contingency we need to address? There are
 techniques in [BBG+19] that account for this; we need to figure out if they're
 practical.]]
 
-## Authenticating and anonymizing client proxies
+## Client authentication
 
 Attackers can impersonate Prio clients and submit large amounts of false input
 in order to spoil aggregations. This is a risk that will be acceptable to many
 deployments where ease of participation in aggregations is most valuable, but
 others could mitigate this problem by requiring client authentication. This
-could be achieved by having clients submit reports over an authenticated channel
-to a proxy server which would then use Oblivous HTTP
-{{!I-D.thomson-http-oblivious}} to forward inputs to the PDA leader, without
-requiring any server participating in PDA to be aware of whatever client
-authentication or attestation scheme is in use.
+could be achieved by having clients submit reports to the leader over a client
+authenticated channel. Note that having clients authenticate to aggregators
+compromises privacy, which can be remedied by introducing an anonymizing proxy
+(see {{anon-proxy}}).
 
-Such a proxy could also remove auxiliary information from inputs (such as source
-IP or HTTP user agent), which could otherwise identify participating clients or
-permit some attacks on robustness.
+[TODO: update this to discuss clients sending reports directly to helper as well
+as leader if we end up choosing to go that direction. See issue #89]
+
+## Anonymizing proxies {#anon-proxy}
+
+Client reports can contain auxiliary information such as source IP, HTTP user
+agent or in deployments which use it, client authentication information, which
+could be used by aggregators to identify participating clients or permit some
+attacks on robustness. This auxiliary information could be removed by having
+clients submit reports to an anonymizing proxy server which would then use
+Oblivous HTTP {{!I-D.thomson-http-oblivious}} to forward inputs to the PDA
+leader, without requiring any server participating in PDA to be aware of
+whatever client authentication or attestation scheme is in use.
 
 ## Batch sizes and privacy
 
