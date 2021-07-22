@@ -94,7 +94,7 @@ document.
    report in a batch (in seconds).
 1. Client: The endpoint from which a user sends data to be aggregated, e.g., a
    web browser.
-1. Collector: The endpoint that receives the output of the aggreagtion function.
+1. Collector: The endpoint that receives the output of the aggregation function.
    It also specifies the parameters of the protocol.
 1. False input: An input that is valid, but incorrect. For example, if the data
    being gathered is whether or not users have clicked on a particular button, a
