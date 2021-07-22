@@ -114,6 +114,7 @@ document.
    Multiple measurements may be grouped into a single protocol input.
 1. Leader: A distinguished aggregator that coordinates input validation and data
    collection.
+1. Helper: [TODO: Define Helper in a useful way]
 1. Output: A reduction over the inputs, for instance a statistical aggregation,
    which is of interest to a collector. This is the output of the aggregation
    function.
