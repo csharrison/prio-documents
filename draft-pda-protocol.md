@@ -67,12 +67,13 @@ TODO: writeme
 # Introduction
 
 This document describes a framework for specifying protocols for
-privacy-preserving data-aggregation. Each protocol is executed by a large set of
-clients and a small set of servers. The servers' goal is to compute some
-aggregate statistic over the clients' inputs without learning the inputs
-themselves. This is made possible by distributing the computation among the
-servers in such a way that, as long as at least one of them executes the
-protocol honestly, no input is ever seen in the clear by any server.
+privacy-preserving data-aggregation (abbreviated PDA). Each protocol is
+executed by a large set of clients and a small set of servers. The servers'
+goal is to compute some aggregate statistic over the clients' inputs without
+learning the inputs themselves. This is made possible by distributing the
+computation among the servers in such a way that, as long as at least one of
+them executes the protocol honestly, no input is ever seen in the clear by
+any server.
 
 ## DISCLAIMER
 
