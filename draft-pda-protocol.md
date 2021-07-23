@@ -375,7 +375,7 @@ Time uint64; /* seconds elapsed since start of UNIX epoch */
 * `nonce`: A unique sequence of bytes used  to ensure that two otherwise
   identical `PDAParam` instances will have distinct `PDATaskID`s. It is
   RECOMMENDED that this be set to a random 16-byte string derived from a
-  cryptographically secure pseurandom number generator.
+  cryptographically secure psuedorandom number generator.
 * `leader_url`: The leader's endpoint URL.
 * `helper_url`: The helper's endpoint URL.
 * `collector_config`: The HPKE configuration of the collector (described in
