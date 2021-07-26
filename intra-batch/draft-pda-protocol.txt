@@ -835,18 +835,18 @@ Table of Contents
    In order to provide replay protection, the leader is required to send
    aggregate sub-requests in ascending order, where the ordering on sub-
    requests is determined by the algorithm defined in Section 8.1.3.2.
-   Specifically, the leader constructs its request such that: * Each
-   sub-request must follow the previous sub-request; and * The first
-   sub-request must follow the last sub-request in the previous
-   aggregate request.
+   Specifically, the leader constructs its request such that: * each
+   sub-request follows the previous sub-request; and * the first sub-
+   request follows the last sub-request in the previous aggregate
+   request.
 
    The helper handles well-formed requests as follows.  (As usual,
    malformed requests are handled as described in Section 3.6.)  It
    first looks for the PDA parameters "PDAParam" for which
    "PDAAggregateReq.task_id" is equal to the task ID derived from
    "PDAParam".  It then filters out out-of-order sub-requests by
-   ignoring any sub-request that does not follow the previous sub-
-   request.  (See Section 8.1.3.2.)
+   ignoring any sub-request that does not follow the previous one (See
+   Section 8.1.3.2.)
 
    The response consists of the helper's updated state and a sequence of
    _sub-responses_, where the i-th sub-response corresponds to the sub-
@@ -1525,14 +1525,20 @@ Table of Contents
    this issue, the core specification imposes an ordering on reports so
    that aggregators can cheaply prevent replays attacks.
 
-   Aggregate requests are ordered as follows: We say that a sub-request
-   "req2" _follows_ sub-request "req1" (both of type
-   "PDAAggregateSubReq") if either "req2.time > req1.time" or "req2.time
-   == req1.time" and "req2.jitter > req1.jitter".
+   Aggregate requests are ordered as follows: We say that a report "R2"
+   _follows_ report "R1" if either "R2.time > R1.time" or "R2.time ==
+   R1.time" and "R2.jitter > R1.jitter".  If "R2.time < R1.time", or
+   "R2.time == R1.time" but "R2.jitter <= R1.jitter", then we say that
+   "R2" _does not follow_ "R1".
 
+   To prevent replay attacks, it suffices for each aggregator to ensure
+   that each report it consumes follows the previous one it consumed.
    To prevent the adversary from tampering with the ordering of reports,
    honest clients incorporate the ordering-sensitive parameters "(time,
    jitter)" into the AAD for HPKE encryption.
+
+   Note that this strategy may result in dropping reports that happen to
+   have the same timestamp and jitter value.
 
 8.2.  System requirements
 
