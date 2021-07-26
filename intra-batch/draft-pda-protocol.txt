@@ -830,7 +830,7 @@ Table of Contents
    [OPEN ISSUE: We usually only need to send this in the first aggregate
    request.  Shall we exclude it in subsequent requests somehow?]  The
    remainder of the structure is dedicated to the protocol-specific
-   helper share and request parameters used for the current round.
+   request parameters.
 
    In order to provide replay protection, the leader is required to send
    aggregate sub-requests in ascending order, where the ordering on sub-
