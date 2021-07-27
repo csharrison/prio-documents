@@ -427,7 +427,7 @@ uint16 HpkeKdfId;  // Defined in I-D.irtf-cfrg-hpke
 [TODO: Decide whether to use the same config structure as OHTTP/ECH. This would
 add support for multiple cipher suites.]
 
-We call this a *key configation*. The key configuration is used to set up a
+We call this a *key configuration*. The key configuration is used to set up a
 base-mode HPKE context to use to derive symmetric keys for protecting: (1) input
 shares sent from the client to an aggregator; or (2) output shares sent from the
 helper to the collector. The *config id*, `HpkeConfig.id`, is forwarded by the
